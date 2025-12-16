@@ -4,6 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import Icon from '@/components/ui/icon';
+import VideoPlayer from '@/components/VideoPlayer';
 
 type Video = {
   id: number;
@@ -13,6 +14,7 @@ type Video = {
   authorAvatar: string;
   views: string;
   duration: string;
+  videoUrl: string;
   isSubscribed?: boolean;
 };
 
@@ -33,6 +35,7 @@ const mockVideos: Video[] = [
     authorAvatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=1',
     views: '125К',
     duration: '15:43',
+    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
   },
   {
     id: 2,
@@ -42,6 +45,7 @@ const mockVideos: Video[] = [
     authorAvatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=2',
     views: '340К',
     duration: '22:15',
+    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4',
   },
   {
     id: 3,
@@ -51,6 +55,7 @@ const mockVideos: Video[] = [
     authorAvatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=3',
     views: '890К',
     duration: '18:30',
+    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
   },
   {
     id: 4,
@@ -60,6 +65,7 @@ const mockVideos: Video[] = [
     authorAvatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=4',
     views: '567К',
     duration: '25:12',
+    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4',
   },
   {
     id: 5,
@@ -69,6 +75,7 @@ const mockVideos: Video[] = [
     authorAvatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=5',
     views: '234К',
     duration: '12:45',
+    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4',
   },
   {
     id: 6,
@@ -78,6 +85,7 @@ const mockVideos: Video[] = [
     authorAvatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=6',
     views: '1.2М',
     duration: '30:00',
+    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4',
   },
 ];
 
@@ -116,6 +124,7 @@ export default function Index() {
   const [activeTab, setActiveTab] = useState<'home' | 'catalog' | 'recommendations' | 'profile'>('home');
   const [searchQuery, setSearchQuery] = useState('');
   const [authors, setAuthors] = useState<Author[]>(mockAuthors);
+  const [selectedVideo, setSelectedVideo] = useState<Video | null>(null);
 
   const handleSubscribe = (authorId: number) => {
     setAuthors((prev) =>
@@ -228,6 +237,7 @@ export default function Index() {
                     key={video.id}
                     className="group cursor-pointer animate-scale-in"
                     style={{ animationDelay: `${index * 0.1}s` }}
+                    onClick={() => setSelectedVideo(video)}
                   >
                     <div className="relative rounded-2xl overflow-hidden mb-3 bg-card">
                       <img
@@ -286,6 +296,7 @@ export default function Index() {
                   key={video.id}
                   className="group cursor-pointer animate-slide-up"
                   style={{ animationDelay: `${index * 0.05}s` }}
+                  onClick={() => setSelectedVideo(video)}
                 >
                   <div className="relative rounded-xl overflow-hidden mb-3 bg-card shadow-lg hover:shadow-2xl transition-shadow">
                     <img
@@ -322,6 +333,7 @@ export default function Index() {
                   key={video.id}
                   className="flex gap-4 p-4 rounded-2xl bg-card hover:bg-card/80 cursor-pointer group border border-border/50 hover:border-primary/50 transition-all animate-scale-in"
                   style={{ animationDelay: `${index * 0.1}s` }}
+                  onClick={() => setSelectedVideo(video)}
                 >
                   <div className="relative w-48 flex-shrink-0 rounded-xl overflow-hidden">
                     <img
@@ -345,10 +357,6 @@ export default function Index() {
                       <span className="text-sm text-muted-foreground">{video.author}</span>
                     </div>
                     <p className="text-sm text-muted-foreground mb-3">{video.views} просмотров</p>
-                    <Button size="sm" variant="outline" className="gap-2">
-                      <Icon name="Play" size={16} />
-                      Смотреть
-                    </Button>
                   </div>
                 </div>
               ))}
@@ -409,6 +417,15 @@ export default function Index() {
           </div>
         )}
       </main>
+
+      {selectedVideo && (
+        <VideoPlayer
+          videoUrl={selectedVideo.videoUrl}
+          title={selectedVideo.title}
+          author={selectedVideo.author}
+          onClose={() => setSelectedVideo(null)}
+        />
+      )}
     </div>
   );
 }
